@@ -1,10 +1,10 @@
 # CLAPS - Avaliação das Seções
-Full stack web app is used by the Secretaria de Educação de São Bernardo do Campo. (PMSBC)
+Full stack web app used by the Secretaria de Educação de São Bernardo do Campo. (PMSBC)
 
 The web app is used by over 7000 employees across the municipality.
 
 ## Tech Stack
-Yeah, I know sheets should not be uses as a db and yada yada yada... But, hear me out, PMSBC offers to the Secretaria de Educação the Enterprise plan of Google Workspace. That being said, this is one of the few development environment available to us.
+Yeah, I know google sheets should not be used as a data base yada yada yada... But, hear me out, PMSBC offers to the Secretaria de Educação the Enterprise plan of Google Workspace. That being said, this standard development environment.
 
 ### Front End
 - HTML5
