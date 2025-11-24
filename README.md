@@ -1,4 +1,4 @@
-# CLAPS - Avaliação das Seções
+# CLASP - Avaliação das Seções
 Full stack web app used by the Secretaria de Educação de São Bernardo do Campo. (PMSBC)
 
 The web app is used by over 7000 employees across the municipality.
