@@ -2,648 +2,647 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
 
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
 
-        .custom-select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 16px 12px;
-        }
+    .custom-select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 16px 12px;
+    }
 
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 4px solid #3498db;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #3498db;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
 
 <body class="bg-gray-100 text-gray-800 items-top justify-center min-h-screen pt-6 pb-12 px-6">
 
-    <div class="w-full max-w-7xl min-w-[450px] mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
+  <div class="w-full max-w-7xl min-w-[450px] mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8">
 
-        <!-- Header -->
-        <div class="text-center ">
-            <span class="text-gray-500 mt-2">Preencha os dados abaixo para iniciar a avaliação.</span>
-        </div>
-
-        <!-- Dados Avaliador -->
-        <div class="my-8">
-            <table class="w-full my-5">
-                <colgroup>
-                    <col style="width: 15%">
-                    <col style="width: 85%">
-                </colgroup>
-                <tr>
-                    <td><label for="avaliador-matr" class="block text-sm font-medium text-gray-700">Matrícula (s/
-                            dig):</label></td>
-                    <td><label for="avaliador-name" class="block text-sm font-medium text-gray-700">Nome:</label></td>
-                </tr>
-                <tr>
-                    <td><input id="avaliador-matr" name="avaliador-matr" type="text" placeholder="Matrícula"
-                            class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                            maxlength=5 minlength=5 required></td>
-                    <td><input id="avaliador-name" name="avaliador-name" type="text"
-                            placeholder="Digite o seu nome completo"
-                            class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                            required></td>
-                </tr>
-                <tr>
-                    <td><span id="avaliador-matr-error" class="text-red-500 text-xs mt-1" style="display: none;">*
-                            Obrigatório</span></td>
-                    <td><span id="avaliador-name-error" class="text-red-500 text-xs mt-1" style="display: none;">*
-                            Obrigatório</span></td>
-                </tr>
-            </table>
-        </div>
-
-        <hr class="m-6" />
-
-        <!-- TEST BUTTON -->
-        <button id="test-btn"
-            class="button bg-red-500 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:bg-red-700 transition-all duration-300 ease-in-out"
-            style="display:none">Clear Local Storage</button>
-
-        <!-- Resposta Salva -->
-        <div id="resposta-salva-div" class="h-[600px] w-full flex flex-col justify-center" style="display:none">
-            <p class="w-full self-center text-center text-green-600  text-2xl font-bold">Resposta salva com sucesso!!!
-            </p>
-        </div>
-
-        <!-- Tutorial -->
-        <div id="tutorial-div" class="h-[600px] w-full flex flex-col justify-center">
-            <p class="w-2/3 self-center text-center text-xl font-bold my-6">Avaliação Secretaria de Educação</p>
-            <p class="w-2/3 self-center text-justify my-2">A avaliação será feita baseada no método “Start - Stop -
-                Continue”. Onde cada critério será avaliado de modo dissertativo, através de três perguntas.</p>
-            <p class="w-2/3 self-center text-justify my-2">Para cada critério de avaliação listado a seguir, reflita
-                sobre nossas práticas atuais. Em seguida, preencha os campos COMEÇAR, PARAR e CONTINUAR com ações,
-                processos ou comportamentos específicos.</p>
-            <ul class="w-2/3 self-center list-disc list-inside space-y-2 my-4 py-6 text-gray-700">
-                <li><span class="font-bold">COMEÇAR: </span>O que deveríamos começar a fazer que não fazemos hoje?</li>
-                <li><span class="font-bold">PARAR: </span>O que deveríamos parar de fazer?</li>
-                <li><span class="font-bold">CONTINUAR: </span>O que estamos fazendo bem e deveríamos continuar ou
-                    fortalecer?</li>
-
-            </ul>
-        </div>
-
-        <!-- Evaluated Topic -->
-        <div id="topic-div" class="w-full flex flex-col justify-center" style="display:none">
-            <p id="departamento-avaliado" class="text-gray-500 text-center font-medium text-2xl my-2"></p>
-            <p id="secao-avaliada" class="text-gray-500 text-center font-medium text-lg my-2"></p>
-
-            <table class="my-6 px-6">
-                <colgroup>
-                    <col style="width: 5%">
-                    <col style="width: 95%">
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td id="topic-index" class="pl-2 text-gray-500 text-left align-top font-medium text-lg">1.</td>
-                        <td>
-                            <p id="topic-title" class="text-gray-500 text-left align-top font-medium text-lg "></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
-                            <p id="topic-description"
-                                class="text-gray-500 text-justify align-top font-light text-base pt-2"></p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Vertical Table -->
-            <table
-                class="bg-gray-50 h-full w-full border-separate border-spacing-0 rounded-md border border-gray-200 overflow-hidden">
-                <colgroup>
-                    <col style="width: 33%">
-                    <col style="width: 33%">
-                    <col style="width: 33%">
-                </colgroup>
-
-                <thead>
-                    <th scope="col"
-                        class="bg-green-100 px-6 py-3 text-center text-s font-medium text-gray-700 tracking-wider">
-                        Começar</th>
-                    <th scope="col"
-                        class="bg-red-100 px-6 py-3 text-center text-s font-medium text-gray-700 tracking-wider">Parar
-                    </th>
-                    <th scope="col"
-                        class="bg-yellow-100 px-6 py-3 text-center text-s font-medium text-gray-700 tracking-wider">
-                        Continuar</th>
-                </thead>
-
-                <tbody class="h-full">
-                    <tr class="h-[500px]">
-                        <td class="h-full p-2 pr-1">
-                            <textarea id="start-text-area" name="start-text-area"
-                                placeholder="O que deveríamos COMEÇAR a fazer que não fazemos hoje? "
-                                class="start-input w-full h-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
-                                maxlength="1000"></textarea>
-                        </td>
-                        <td class="h-full py-2 px-1">
-                            <textarea id="stop-text-area" name="stop-text-area"
-                                placeholder="O que deveríamos PARAR de fazer?"
-                                class="stop-input w-full h-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
-                                maxlength="1000"></textarea>
-                        </td>
-                        <td class="h-full p-2 pl-1">
-                            <textarea id="continue-text-area" name="continue-text-area"
-                                placeholder="O que estamos fazendo bem e deveríamos CONTINUAR ou fortalecer?"
-                                class="continue-input w-full h-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
-                                maxlength="1000"></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span id="start-text-area-error" class="text-red-500 text-xs mt-1 pl-2 align-top"
-                                style="display:none">* Obrigatório</span></td>
-                        <td><span id="stop-text-area-error" class="text-red-500 text-xs mt-1 pl-2 align-top"
-                                style="display:none">* Obrigatório</span></td>
-                        <td><span id="continue-text-area-error" class="text-red-500 text-xs mt-1 pl-2 align-top"
-                                style="display:none">* Obrigatório</span></td>
-                    </tr>
-
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="pt-2 pb-4">
-                            <input id="abster-checkbox" name="abster-checkbox" type="checkbox"
-                                class="m-2 align-middle"><span class="text-sm align-middle">Não posso responder esta
-                                pergunta.</span>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Loader spinner -->
-        <div id="loader-div" class="flex justify-center items-center py-8" style="display: none">
-            <div class="loader"></div>
-        </div>
-
-        <!-- Buttons and Message Area -->
-        <div id="action-area" class="mt-8">
-            <div id="message-area" class="my-4 font-medium text-center"></div>
-
-            <table class="w-full table-fixed">
-                <colgroup>
-                    <col class="w-1/3">
-                    <col class="w-1/3">
-                    <col class="w-1/3">
-                </colgroup>
-                <tr>
-                    <td class="text-left">
-                        <button id="prev-btn"
-                            class="button bg-slate-500 px-2 py-2 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-slate-700 transition-all duration-300 ease-in-out"
-                            style="display:none">Anterior</button>
-                    </td>
-
-                    <td class="text-center">
-                        <button id="init-btn"
-                            class="button bg-amber-500 px-2 py-4 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-amber-600 transition-all duration-300 ease-in-out">Iniciar
-                            avaliação</button>
-                        <button id="submit-btn"
-                            class="button bg-red-500 px-2 py-4 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 ease-in-out"
-                            style="display:none">Enviar avaliação</button>
-                    </td>
-
-                    <td class="text-right">
-                        <button id="next-btn"
-                            class="button bg-slate-500 px-2 py-2 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-slate-700 transition-all duration-300 ease-in-out"
-                            style="display:none">Próximo</button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-    </div>
+    <!-- Header -->
+    <div class="text-center ">
+      <span class="text-gray-500 mt-2">Preencha os dados abaixo para iniciar a avaliação.</span>
     </div>
 
+    <!-- Dados Avaliador -->
+    <div class="my-8">
+      <table class="w-full my-5">
+        <colgroup>
+          <col style="width: 15%">
+          <col style="width: 85%">
+        </colgroup>
+        <tr>
+          <td><label for="avaliador-matr" class="block text-sm font-medium text-gray-700">Matrícula (s/ dig):</label>
+          </td>
+          <td><label for="avaliador-name" class="block text-sm font-medium text-gray-700">Nome:</label></td>
+        </tr>
+        <tr>
+          <td><input id="avaliador-matr" name="avaliador-matr" type="text" placeholder="Matrícula"
+              class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+              maxlength=5 minlength=5 required></td>
+          <td><input id="avaliador-name" name="avaliador-name" type="text" placeholder="Digite o seu nome completo"
+              class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+              required></td>
+        </tr>
+        <tr>
+          <td>
+            <span id="avaliador-matr-error" class="text-red-500 text-xs mt-1" style="display: none;">*
+              Obrigatório</span>
+          </td>
+          <td>
+            <span id="avaliador-name-error" class="text-red-500 text-xs mt-1" style="display: none;">*
+              Obrigatório</span>
+          </td>
+        </tr>
+      </table>
     </div>
 
-    <script>
-        // IIFE
-        (function () {
-            // throw new Error(`------------------------------\nhere\n------------------------------`);
-
-            // -----------------------------------------------------------------------  Data
-            const PERGUNTAS_DB_INDEXES = <?!= dbIndexes ?>;
-            const perguntasData = handlePerguntas(<?!= perguntasPayload ?>);
-
-            // -----------------------------------------------------------------------  Colors
-            const STYLE_ERROR_BORDER = ['border-red-500', 'focus:ring-red-500', 'focus:border-red-500'];
-            const STYLE_NEUTRAL_BORDER = ['border-gray-300', 'focus:ring-indigo-500', 'focus:border-indigo-500'];
-
-            // -----------------------------------------------------------------------  Elements
-            // avaliador
-            const avaliadorMatr = document.getElementById('avaliador-matr');
-            const avaliadorMatrError = document.getElementById('avaliador-matr-error');
-            const avaliadorName = document.getElementById('avaliador-name');
-            const avaliadorNameError = document.getElementById('avaliador-name-error');
-
-            // buttons
-            const testBtn = document.getElementById('test-btn');
-            const prevBtn = document.getElementById('prev-btn');
-            const initBtn = document.getElementById('init-btn');
-            const submitBtn = document.getElementById('submit-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const absterCheckbox = document.getElementById('abster-checkbox');
-
-            // divs
-            const tutorialDiv = document.getElementById('tutorial-div');
-            const respostaSalvaDiv = document.getElementById('resposta-salva-div');
-            const loaderDiv = document.getElementById('loader-div');
-            const topicDiv = document.getElementById('topic-div');
-
-            // seção
-            const departamentoAvaliado = document.getElementById('departamento-avaliado');
-            const secaoAvaliada = document.getElementById('secao-avaliada');
-            const topicIndex = document.getElementById('topic-index');
-            const topicTitle = document.getElementById('topic-title');
-            const topicDescription = document.getElementById('topic-description');
-
-            // resposta
-            const startTextArea = document.getElementById('start-text-area');
-            const stopTextArea = document.getElementById('stop-text-area');
-            const continueTextArea = document.getElementById('continue-text-area');
-
-            // feedback
-            const startTextAreaError = document.getElementById('start-text-area-error');
-            const stopTextAreaError = document.getElementById('stop-text-area-error');
-            const continueTextAreaError = document.getElementById('continue-text-area-error');
-            const messageArea = document.getElementById('message-area');
-
-            // State vars
-            let currentTopicoIndex = -1;
-
-            // ----------------------------------------------------------------------- Event Listeners
-            document.addEventListener('DOMContentLoaded', () => {
-
-                const jaRespondido = localStorage.getItem("jaRespondido");
-
-                if (jaRespondido) {
-                    showFullPageSubmitSuccessMessage();
-                    return;
-                }
-
-                const lsData = loadRespostasFromLocalStorage();
-
-                try { // load user data
-                    avaliadorMatr.value = lsData[0].matr || '';
-                    avaliadorName.value = lsData[0].name || '';
-                } catch (e) {
-                    //ignore
-                }
-
-                toggleVisibility();
-            });
-
-            testBtn.addEventListener('click', () => {
-            })
-
-            prevBtn.addEventListener('click', () => {
-                if (!validateFields()) return;
-
-                showMessage(); // clears the current message
-                saveResposta();
-
-                currentTopicoIndex--;
-
-                if (currentTopicoIndex >= 0) {
-                    loadTopico();
-                }
-
-                toggleVisibility();
-            })
-
-            initBtn.addEventListener('click', () => {
-                if (!validateFields()) return;
-
-                currentTopicoIndex++;
-                loadTopico();
-
-                toggleVisibility();
-            })
-
-            submitBtn.addEventListener('click', () => {
-                if (!validateFields()) return;
-
-                saveAndSubmit();
-            })
-
-            nextBtn.addEventListener('click', () => {
-                if (!validateFields()) return;
-
-                showMessage(); // clears the current message
-                saveResposta();
-
-                if (currentTopicoIndex < perguntasData.length - 1) {
-                    currentTopicoIndex++;
-                    loadTopico();
-                }
-                toggleVisibility();
-            })
-
-            absterCheckbox.addEventListener('change', () => {
-                toggleSSCTextAreasEnabling();
-            })
-
-            // ----------------------------------------------------------------------- Togglers
-            function toggleVisibility() {
-
-                if (currentTopicoIndex === -1) { // tutorial page
-                    tutorialDiv.style.display = '';
-                    topicDiv.style.display = 'none';
-
-                    prevBtn.style.display = 'none';
-                    initBtn.style.display = '';
-                    nextBtn.style.display = 'none';
-
-                } else if (currentTopicoIndex === perguntasData.length - 1) { // last page
-
-                    tutorialDiv.style.display = 'none';
-                    topicDiv.style.display = '';
-
-                    prevBtn.style.display = '';
-                    submitBtn.style.display = '';
-                    initBtn.style.display = 'none';
-                    nextBtn.style.display = 'none';
-
-                } else {
-                    tutorialDiv.style.display = 'none';
-                    topicDiv.style.display = '';
-
-                    prevBtn.style.display = '';
-                    submitBtn.style.display = 'none';
-                    initBtn.style.display = 'none';
-                    nextBtn.style.display = '';
-                }
-            }
-
-            function toggleLoaderSpinner() {
-                loaderDiv.style.display = loaderDiv.style.display === 'none' ? '' : 'none';
-            }
-
-            function toggleSSCTextAreasEnabling() {
-                if (absterCheckbox.checked) {
-                    clearTextAreas();
-
-                    //disable areas
-                    startTextArea.disabled = true;
-                    stopTextArea.disabled = true;
-                    continueTextArea.disabled = true;
-
-                    validateFields();
-                } else {
-                    startTextArea.disabled = false;
-                    stopTextArea.disabled = false;
-                    continueTextArea.disabled = false;
-                }
-            }
-
-            function clearTextAreas() {
-                startTextArea.value = '';
-                stopTextArea.value = '';
-                continueTextArea.value = '';
-            }
-
-
-            // ----------------------------------------------------------------------- Loaders
-            function loadTopico() {
-
-                departamentoAvaliado.textContent = perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.departamento];
-                secaoAvaliada.textContent = perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.secao];
-                topicTitle.textContent = perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.topicoTitle];
-                topicDescription.innerHTML = `<span class="font-bold">Critério a avaliar: </span>` + perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.topicoDescr].replace(/\r\n|\r|\n/g, "<br/>");
-                topicIndex.textContent = currentTopicoIndex + 1 + ". ";
-
-                loadResposta();
-
-            }
-
-            function loadResposta() {
-                const respostasData = loadRespostasFromLocalStorage();
-
-                let currentResposta = respostasData.filter(entry => entry.idPergunta === perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.id]);
-
-                if (currentResposta.length == 0) {
-                    startTextArea.value = '';
-                    stopTextArea.value = '';
-                    continueTextArea.value = '';
-                    absterCheckbox.checked = false;
-
-                } else if (currentResposta.length == 1) {
-                    currentResposta = currentResposta[0];
-
-                    startTextArea.value = currentResposta.toStart || '';
-                    stopTextArea.value = currentResposta.toStop || '';
-                    continueTextArea.value = currentResposta.toContinue || '';
-                    absterCheckbox.checked = currentResposta.abster || false;
-
-                } else {
-                    throw new Error(`otracoisaerradapacadaralhoaconteceu seliga: \n\n->${currentResposta.length}`)
-                }
-
-                toggleSSCTextAreasEnabling();
-            }
-
-            // ----------------------------------------------------------------------- Savers
-            function saveResposta() {
-                let currentResposta = {
-                    matr: avaliadorMatr.value,
-                    name: avaliadorName.value,
-                    idPergunta: perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.id],
-                    // departamento: departamentoAvaliado.value,
-                    // secao: secaoAvaliada.textContent,
-                    // title: topicTitle.textContent,
-                    // descr: topicDescription.textContent.substring(20).replace(/<br\/?>/g, ' \r\n'),
-                    toStart: startTextArea.value,
-                    toStop: stopTextArea.value,
-                    toContinue: continueTextArea.value,
-                    abster: absterCheckbox.checked,
-                    timestamp: Date.now(),
-                };
-
-                const respostasData = loadRespostasFromLocalStorage();
-                const currentRespostaIndex = respostasData.find(resposta => resposta.idPergunta === currentResposta.idPergunta);
-
-                if (!currentRespostaIndex) {
-                    respostasData.push(currentResposta);
-                } else {
-                    respostasData[currentRespostaIndex] = currentResposta;
-                }
-
-                saveRespostasToLocalStorage(respostasData);
-
-                return respostasData;
-            }
-
-            function saveAndSubmit() {
-                showMessage('Salvando resposta...');
-                toggleLoaderSpinner();
-
-                // const respostasData = saveResposta().map(entry => Object.values(entry));
-                const respostasData = saveResposta();
-                google.script.run.withSuccessHandler(handleSubmitResponse).saveFormData(JSON.stringify(respostasData));
-            }
-
-            // ----------------------------------------------------------------------- Local Storage
-            function loadRespostasFromLocalStorage() {
-                let lsData = localStorage.getItem("respostas");
-
-                if (!lsData) {
-                    const respostasData = [];
-                    saveRespostasToLocalStorage(respostasData);
-                    return respostasData;
-                }
-
-                return JSON.parse(lsData);
-            }
-
-            function saveRespostasToLocalStorage(respostasData) {
-                localStorage.setItem("respostas", JSON.stringify(respostasData));
-            }
-
-            // ----------------------------------------------------------------------- Validation
-            function validateFields() {
-                let isValid = true;
-
-                const matr = avaliadorMatr.value;
-                if (!matr) {
-                    setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Campo obrigatório');
-                    isValid = false;
-                } else if (/\D+/.test(matr)) {
-                    setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Apenas números (sem dígito)');
-                    isValid = false;
-                } else if (!/^\d{5}$/.test(matr)) {
-                    setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Matrícula inválida');
-                    isValid = false;
-                } else {
-                    clearErrorStyles(avaliadorMatr, avaliadorMatrError);
-                }
-
-                const name = avaliadorName.value;
-                if (!name) {
-                    setErrorStyles(avaliadorName, avaliadorNameError, 'Campo obrigatório');
-                    isValid = false;
-                } else if (/\d+/.test(name)) {
-                    setErrorStyles(avaliadorName, avaliadorNameError, 'Nome inválido');
-                    isValid = false;
-                } else if (!/^\D+\s\D+\D*$/.test(name)) { // word + space + word + any
-                    setErrorStyles(avaliadorName, avaliadorNameError, 'Insira o nome completo');
-                    isValid = false;
-                } else {
-                    clearErrorStyles(avaliadorName, avaliadorNameError);
-
-                    avaliadorName.value = name.toUpperCase().trim();
-                }
-
-                if (currentTopicoIndex >= 0 && !absterCheckbox.checked && (!startTextArea.value && !stopTextArea.value && !continueTextArea.value)) {
-                    const msg = 'Ao menos um dos campos deve estar preenchido';
-                    setErrorStyles(startTextArea, startTextAreaError, msg);
-                    setErrorStyles(stopTextArea, stopTextAreaError, msg);
-                    setErrorStyles(continueTextArea, continueTextAreaError, msg);
-                    isValid = false;
-                } else {
-                    clearErrorStyles(startTextArea, startTextAreaError);
-                    clearErrorStyles(stopTextArea, stopTextAreaError);
-                    clearErrorStyles(continueTextArea, continueTextAreaError);
-                }
-
-                if (isValid) {
-                    showMessage();
-                } else {
-                    showMessage('Por favor, corrija os campos destacados em vermelho.', 'error');
-                }
-
-                return isValid;
-            }
-
-            function setErrorStyles(inputEl, errorEl, message) {
-                inputEl.classList.remove(...STYLE_NEUTRAL_BORDER);
-                inputEl.classList.add(...STYLE_ERROR_BORDER);
-                errorEl.textContent = `* ${message}`;
-                errorEl.style.display = 'inline'; // Use 'inline' to match span behavior
-            }
-
-            function clearErrorStyles(inputEl, errorEl) {
-                inputEl.classList.remove(...STYLE_ERROR_BORDER);
-                inputEl.classList.add(...STYLE_NEUTRAL_BORDER);
-                errorEl.style.display = 'none';
-            }
-
-            // ----------------------------------------------------------------------- Handlers
-            function handlePerguntas(payload) {
-                if (payload.status !== "success") return;
-
-                return JSON.parse(payload.data);
-            }
-
-            function handleSubmitResponse(payload) {
-                toggleLoaderSpinner();
-                if (payload.status === 'success') {
-                    showFullPageSubmitSuccessMessage();
-
-                    localStorage.setItem("jaRespondido", true);
-                } else {
-                    showMessage(payload.message, payload.status);
-                }
-            }
-
-            function showFullPageSubmitSuccessMessage() {
-                showMessage();
-
-                respostaSalvaDiv.style.display = '';
-                tutorialDiv.style.display = 'none';
-                topicDiv.style.display = 'none';
-
-                prevBtn.style.display = 'none';
-                submitBtn.style.display = 'none';
-                initBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-            }
-
-            function showMessage(text, type) {
-                messageArea.textContent = text;
-                const colorClass = type === 'success' ? 'text-green-600' :
-                    type === 'error' ? 'text-red-600' : 'text-grey-900';
-                messageArea.className = `my-4 ${colorClass} text-center`;
-                messageArea.style.display = 'block';
-            }
-
-        })()
-    </script>
+    <hr class="m-6" />
+
+    <!-- TEST BUTTON -->
+    <button id="test-btn"
+      class="button bg-red-500 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:bg-red-700 transition-all duration-300 ease-in-out"
+      style="display:none">Clear Local Storage</button>
+
+    <!-- Resposta Salva -->
+    <div id="resposta-salva-div" class="h-[600px] w-full flex flex-col justify-center" style="display:none">
+      <p class="w-full self-center text-center text-green-600  text-2xl font-bold">Resposta salva com sucesso!!!</p>
+    </div>
+
+    <!-- Tutorial -->
+    <div id="tutorial-div" class="h-[600px] w-full flex flex-col justify-center">
+      <p class="w-2/3 self-center text-center text-xl font-bold my-6">Avaliação da Secretaria de Educação - 2025</p>
+      <p class="w-2/3 self-center text-justify my-2">A avaliação será feita baseada no método “Start - Stop - Continue”.
+        Onde cada critério será avaliado de modo dissertativo, através de três perguntas.</p>
+      <p class="w-2/3 self-center text-justify my-2">Para cada critério de avaliação listado a seguir, reflita sobre
+        nossas práticas atuais. Em seguida, preencha os campos COMEÇAR, PARAR e CONTINUAR com ações, processos ou
+        comportamentos específicos.</p>
+      <ul class="w-2/3 self-center list-disc list-inside space-y-2 my-4 py-6 text-gray-700">
+        <li><span class="font-bold">COMEÇAR: </span>O que deveríamos começar a fazer que não fazemos hoje?</li>
+        <li><span class="font-bold">PARAR: </span>O que deveríamos parar de fazer?</li>
+        <li><span class="font-bold">CONTINUAR: </span>O que estamos fazendo bem e deveríamos continuar ou fortalecer?
+        </li>
+
+      </ul>
+    </div>
+
+    <!-- Evaluated Topic -->
+    <div id="topic-div" class="w-full flex flex-col justify-center" style="display:none">
+      <p id="departamento-avaliado" class="text-gray-500 text-center font-medium text-2xl my-2"></p>
+      <p id="secao-avaliada" class="text-gray-500 text-center font-medium text-lg my-2"></p>
+
+      <table class="my-6 px-6">
+        <colgroup>
+          <col style="width: 5%">
+          <col style="width: 95%">
+        </colgroup>
+        <tbody>
+          <tr>
+            <td id="topic-index" class="pl-2 text-gray-500 text-left align-top font-medium text-lg">1.</td>
+            <td>
+              <p id="topic-title" class="text-gray-500 text-left align-top font-medium text-lg "></p>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <p id="topic-description" class="text-gray-500 text-justify align-top font-light text-base pt-2"></p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Vertical Table -->
+      <table
+        class="bg-gray-50 h-full w-full border-separate border-spacing-0 rounded-md border border-gray-200 overflow-hidden">
+        <colgroup>
+          <col style="width: 33%">
+          <col style="width: 33%">
+          <col style="width: 33%">
+        </colgroup>
+
+        <thead>
+          <th scope="col" class="bg-green-100 px-6 py-3 text-center text-s font-medium text-gray-700 tracking-wider">
+            Começar</th>
+          <th scope="col" class="bg-red-100 px-6 py-3 text-center text-s font-medium text-gray-700 tracking-wider">Parar
+          </th>
+          <th scope="col" class="bg-yellow-100 px-6 py-3 text-center text-s font-medium text-gray-700 tracking-wider">
+            Continuar</th>
+        </thead>
+
+        <tbody class="h-full">
+          <tr class="h-[500px]">
+            <td class="h-full p-2 pr-1">
+              <textarea id="start-text-area" name="start-text-area"
+                placeholder="O que deveríamos COMEÇAR a fazer que não fazemos hoje? "
+                class="start-input w-full h-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                maxlength="1000"></textarea>
+            </td>
+            <td class="h-full py-2 px-1">
+              <textarea id="stop-text-area" name="stop-text-area" placeholder="O que deveríamos PARAR de fazer?"
+                class="stop-input w-full h-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                maxlength="1000"></textarea>
+            </td>
+            <td class="h-full p-2 pl-1">
+              <textarea id="continue-text-area" name="continue-text-area"
+                placeholder="O que estamos fazendo bem e deveríamos CONTINUAR ou fortalecer?"
+                class="continue-input w-full h-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                maxlength="1000"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span id="start-text-area-error" class="text-red-500 text-xs mt-1 pl-2 align-top" style="display:none">*
+                Obrigatório</span>
+            </td>
+            <td>
+              <span id="stop-text-area-error" class="text-red-500 text-xs mt-1 pl-2 align-top" style="display:none">*
+                Obrigatório</span>
+            </td>
+            <td>
+              <span id="continue-text-area-error" class="text-red-500 text-xs mt-1 pl-2 align-top"
+                style="display:none">* Obrigatório</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td class="pt-2 pb-4">
+              <input id="abster-checkbox" name="abster-checkbox" type="checkbox" class="m-2 align-middle"><span
+                class="text-sm align-middle">Não posso responder esta pergunta.</span>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Loader spinner -->
+    <div id="loader-div" class="flex justify-center items-center py-8" style="display: none">
+      <div class="loader"></div>
+    </div>
+
+    <!-- Buttons and Message Area -->
+    <div id="action-area" class="mt-8">
+      <div id="message-area" class="my-4 font-medium text-center"></div>
+
+      <table class="w-full table-fixed">
+        <colgroup>
+          <col class="w-1/3">
+          <col class="w-1/3">
+          <col class="w-1/3">
+        </colgroup>
+        <tr>
+          <td class="text-left">
+            <button id="prev-btn"
+              class="button bg-slate-500 px-2 py-2 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-slate-700 transition-all duration-300 ease-in-out"
+              style="display:none">Anterior</button>
+          </td>
+
+          <td class="text-center">
+            <button id="init-btn"
+              class="button bg-amber-500 px-2 py-4 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-amber-600 transition-all duration-300 ease-in-out">Iniciar
+              avaliação</button>
+            <button id="submit-btn"
+              class="button bg-red-500 px-2 py-4 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 ease-in-out"
+              style="display:none">Enviar avaliação</button>
+          </td>
+
+          <td class="text-right">
+            <button id="next-btn"
+              class="button bg-slate-500 px-2 py-2 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-slate-700 transition-all duration-300 ease-in-out"
+              style="display:none">Próximo</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script id="data-indexes" type="application/json">
+    <?!= dbIndexes ?> 
+  </script>
+  <script id="data-perguntas" type="application/json">
+    <?!= perguntasPayload ?> 
+  </script>
+
+  <script>
+    // IIFE
+    (function () {
+      // -----------------------------------------------------------------------  Data
+      const PERGUNTAS_DB_INDEXES = JSON.parse(document.getElementById("data-indexes").textContent);
+      const perguntasData = JSON.parse(document.getElementById("data-perguntas").textContent);
+
+      // -----------------------------------------------------------------------  Colors
+      const STYLE_ERROR_BORDER = ['border-red-500', 'focus:ring-red-500', 'focus:border-red-500'];
+      const STYLE_NEUTRAL_BORDER = ['border-gray-300', 'focus:ring-indigo-500', 'focus:border-indigo-500'];
+
+      // -----------------------------------------------------------------------  Elements
+      // avaliador
+      const avaliadorMatr = document.getElementById('avaliador-matr');
+      const avaliadorMatrError = document.getElementById('avaliador-matr-error');
+      const avaliadorName = document.getElementById('avaliador-name');
+      const avaliadorNameError = document.getElementById('avaliador-name-error');
+
+      // buttons
+      const testBtn = document.getElementById('test-btn');
+      const prevBtn = document.getElementById('prev-btn');
+      const initBtn = document.getElementById('init-btn');
+      const submitBtn = document.getElementById('submit-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const absterCheckbox = document.getElementById('abster-checkbox');
+
+      // divs
+      const tutorialDiv = document.getElementById('tutorial-div');
+      const respostaSalvaDiv = document.getElementById('resposta-salva-div');
+      const loaderDiv = document.getElementById('loader-div');
+      const topicDiv = document.getElementById('topic-div');
+
+      // seção
+      const departamentoAvaliado = document.getElementById('departamento-avaliado');
+      const secaoAvaliada = document.getElementById('secao-avaliada');
+      const topicIndex = document.getElementById('topic-index');
+      const topicTitle = document.getElementById('topic-title');
+      const topicDescription = document.getElementById('topic-description');
+
+      // resposta
+      const startTextArea = document.getElementById('start-text-area');
+      const stopTextArea = document.getElementById('stop-text-area');
+      const continueTextArea = document.getElementById('continue-text-area');
+
+      // feedback
+      const startTextAreaError = document.getElementById('start-text-area-error');
+      const stopTextAreaError = document.getElementById('stop-text-area-error');
+      const continueTextAreaError = document.getElementById('continue-text-area-error');
+      const messageArea = document.getElementById('message-area');
+
+      // State vars
+      let currentTopicoIndex = -1;
+
+      // ----------------------------------------------------------------------- Event Listeners
+      document.addEventListener('DOMContentLoaded', () => {
+
+        const jaRespondido = localStorage.getItem("jaRespondido");
+
+        if (jaRespondido) {
+          showFullPageSubmitSuccessMessage();
+          return;
+        }
+
+        loadRespostasFromLocalStorage();
+        loadUserDataFromLocalStorage();
+
+        toggleVisibility();
+      });
+
+      testBtn.addEventListener('click', () => {
+      })
+
+      prevBtn.addEventListener('click', () => {
+        if (!validateFields()) return;
+
+        showMessage(); // clears the current message
+        saveResposta();
+
+        currentTopicoIndex--;
+
+        if (currentTopicoIndex >= 0) {
+          loadTopico();
+        }
+
+        toggleVisibility();
+      })
+
+      initBtn.addEventListener('click', () => {
+        if (!validateFields()) return;
+
+        currentTopicoIndex++;
+        loadTopico();
+
+        toggleVisibility();
+      })
+
+      submitBtn.addEventListener('click', () => {
+        if (!validateFields()) return;
+
+        saveAndSubmit();
+      })
+
+      nextBtn.addEventListener('click', () => {
+        if (!validateFields()) return;
+
+        showMessage(); // clears the current message
+        saveResposta();
+
+        if (currentTopicoIndex < perguntasData.length - 1) {
+          currentTopicoIndex++;
+          loadTopico();
+        }
+        toggleVisibility();
+      })
+
+      absterCheckbox.addEventListener('change', () => {
+        toggleSSCTextAreasEnabling();
+      })
+
+      // ----------------------------------------------------------------------- Togglers
+      function toggleVisibility() {
+
+        if (currentTopicoIndex === -1) { // tutorial page
+          tutorialDiv.style.display = '';
+          topicDiv.style.display = 'none';
+
+          prevBtn.style.display = 'none';
+          initBtn.style.display = '';
+          nextBtn.style.display = 'none';
+
+        } else if (currentTopicoIndex === perguntasData.length - 1) { // last page
+
+          tutorialDiv.style.display = 'none';
+          topicDiv.style.display = '';
+
+          prevBtn.style.display = '';
+          submitBtn.style.display = '';
+          initBtn.style.display = 'none';
+          nextBtn.style.display = 'none';
+
+        } else {
+          tutorialDiv.style.display = 'none';
+          topicDiv.style.display = '';
+
+          prevBtn.style.display = '';
+          submitBtn.style.display = 'none';
+          initBtn.style.display = 'none';
+          nextBtn.style.display = '';
+        }
+      }
+
+      function toggleLoaderSpinner() {
+        loaderDiv.style.display = loaderDiv.style.display === 'none' ? '' : 'none';
+      }
+
+      function toggleSSCTextAreasEnabling() {
+        if (absterCheckbox.checked) {
+          // clear text areas
+          startTextArea.value = '';
+          stopTextArea.value = '';
+          continueTextArea.value = '';
+
+          // disable areas
+          startTextArea.disabled = true;
+          stopTextArea.disabled = true;
+          continueTextArea.disabled = true;
+
+          validateFields();
+
+        } else {
+          // enable text areas
+          startTextArea.disabled = false;
+          stopTextArea.disabled = false;
+          continueTextArea.disabled = false;
+        }
+      }
+
+      // ----------------------------------------------------------------------- Loaders
+      function loadTopico() {
+        // replaces '\n' and '\r' with '<br/>'
+        topicDescription.innerHTML = `<span class="font-bold">Critério a avaliar: </span>` + perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.topicoDescr].replace(/\r\n|\r|\n/g, "<br/>");
+        departamentoAvaliado.textContent = perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.departamento];
+        secaoAvaliada.textContent = perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.secao];
+        topicTitle.textContent = perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.topicoTitle];
+        topicIndex.textContent = currentTopicoIndex + 1 + ". ";
+
+        loadResposta();
+
+      }
+
+      function loadResposta() {
+        const respostasData = loadRespostasFromLocalStorage();
+
+        let currentResposta = respostasData.filter(entry => entry.idPergunta === perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.id]);
+
+        if (currentResposta.length == 0) {
+          startTextArea.value = '';
+          stopTextArea.value = '';
+          continueTextArea.value = '';
+          absterCheckbox.checked = false;
+
+        } else if (currentResposta.length == 1) {
+          currentResposta = currentResposta[0];
+
+          startTextArea.value = currentResposta.toStart || '';
+          stopTextArea.value = currentResposta.toStop || '';
+          continueTextArea.value = currentResposta.toContinue || '';
+          absterCheckbox.checked = currentResposta.abster || false;
+
+        } else {
+          throw new Error(`otracoisaerradapacadaralhoaconteceu seliga: \n\n->${currentResposta.length}`)
+        }
+
+        toggleSSCTextAreasEnabling();
+      }
+
+      // ----------------------------------------------------------------------- Savers
+      function saveResposta() {
+        saveUserDataToLocalStorage();
+
+        let currentResposta = {
+          idPergunta: perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.id],
+          toStart: startTextArea.value,
+          toStop: stopTextArea.value,
+          toContinue: continueTextArea.value,
+          abster: absterCheckbox.checked,
+        };
+
+        const respostasData = loadRespostasFromLocalStorage();
+        const currentRespostaIndex = respostasData.findIndex(resposta => resposta.idPergunta === currentResposta.idPergunta);
+
+        if (currentRespostaIndex === -1) {
+          respostasData.push(currentResposta);
+        } else {
+          respostasData[currentRespostaIndex] = currentResposta;
+        }
+
+        saveRespostasToLocalStorage(respostasData);
+
+        return respostasData;
+      }
+
+      function saveAndSubmit() {
+        showMessage('Salvando resposta...');
+        toggleLoaderSpinner();
+
+        const payload = {
+          matr: avaliadorMatr.value,
+          name: avaliadorName.value,
+          respostasData: JSON.stringify(saveResposta()),
+          timestamp: Date.now(),
+        }
+        google.script.run.withSuccessHandler(handleSubmitResponse).saveFormData(JSON.stringify(payload));
+      }
+
+      // ----------------------------------------------------------------------- Local Storage
+      function saveUserDataToLocalStorage() {
+        localStorage.setItem("avaliadorMatr", avaliadorMatr.value);
+        localStorage.setItem("avaliadorName", avaliadorName.value);
+      }
+
+      function loadUserDataFromLocalStorage() {
+        avaliadorMatr.value = localStorage.getItem("avaliadorMatr") || "";
+        avaliadorName.value = localStorage.getItem("avaliadorName") || "";
+      }
+
+      function loadRespostasFromLocalStorage() {
+        let lsData = localStorage.getItem("respostas");
+
+        if (!lsData) {
+          const respostasData = [];
+          saveRespostasToLocalStorage(respostasData);
+          return respostasData;
+        }
+
+        return JSON.parse(lsData);
+      }
+
+      function saveRespostasToLocalStorage(respostasData) {
+        localStorage.setItem("respostas", JSON.stringify(respostasData));
+      }
+
+      // ----------------------------------------------------------------------- Validation
+      function validateFields() {
+        let isValid = true;
+
+        const matr = avaliadorMatr.value;
+        if (!matr) {
+          setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Campo obrigatório');
+          isValid = false;
+        } else if (/\D+/.test(matr)) {
+          setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Apenas números (sem dígito)');
+          isValid = false;
+        } else if (!/^\d{5}$/.test(matr)) {
+          setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Matrícula inválida');
+          isValid = false;
+        } else {
+          clearErrorStyles(avaliadorMatr, avaliadorMatrError);
+        }
+
+        const name = avaliadorName.value;
+        if (!name) {
+          setErrorStyles(avaliadorName, avaliadorNameError, 'Campo obrigatório');
+          isValid = false;
+        } else if (/\d+/.test(name)) {
+          setErrorStyles(avaliadorName, avaliadorNameError, 'Nome inválido');
+          isValid = false;
+        } else if (!/^\D+\s\D+\D*$/.test(name)) { // word + space + word + any
+          setErrorStyles(avaliadorName, avaliadorNameError, 'Insira o nome completo');
+          isValid = false;
+        } else {
+          clearErrorStyles(avaliadorName, avaliadorNameError);
+
+          avaliadorName.value = name.toUpperCase().trim();
+        }
+
+        if (currentTopicoIndex >= 0 && !absterCheckbox.checked && (!startTextArea.value && !stopTextArea.value && !continueTextArea.value)) {
+          const msg = 'Ao menos um dos campos deve estar preenchido';
+          setErrorStyles(startTextArea, startTextAreaError, msg);
+          setErrorStyles(stopTextArea, stopTextAreaError, msg);
+          setErrorStyles(continueTextArea, continueTextAreaError, msg);
+          isValid = false;
+        } else {
+          clearErrorStyles(startTextArea, startTextAreaError);
+          clearErrorStyles(stopTextArea, stopTextAreaError);
+          clearErrorStyles(continueTextArea, continueTextAreaError);
+        }
+
+        if (isValid) {
+          showMessage();
+        } else {
+          showMessage('Por favor, corrija os campos destacados em vermelho.', 'error');
+        }
+
+        return isValid;
+      }
+
+      function setErrorStyles(inputEl, errorEl, message) {
+        inputEl.classList.remove(...STYLE_NEUTRAL_BORDER);
+        inputEl.classList.add(...STYLE_ERROR_BORDER);
+        errorEl.textContent = `* ${message}`;
+        errorEl.style.display = 'inline'; // Use 'inline' to match span behavior
+      }
+
+      function clearErrorStyles(inputEl, errorEl) {
+        inputEl.classList.remove(...STYLE_ERROR_BORDER);
+        inputEl.classList.add(...STYLE_NEUTRAL_BORDER);
+        errorEl.style.display = 'none';
+      }
+
+      // ----------------------------------------------------------------------- Handlers
+      function handleSubmitResponse(payload) {
+        toggleLoaderSpinner();
+        if (payload.status === 'success') {
+          showFullPageSubmitSuccessMessage();
+
+          localStorage.setItem("jaRespondido", true);
+        } else {
+          showMessage(payload.message, payload.status);
+        }
+      }
+
+      function showFullPageSubmitSuccessMessage() {
+        showMessage();
+
+        respostaSalvaDiv.style.display = '';
+        tutorialDiv.style.display = 'none';
+        topicDiv.style.display = 'none';
+
+        prevBtn.style.display = 'none';
+        submitBtn.style.display = 'none';
+        initBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+      }
+
+      function showMessage(text, type) {
+        messageArea.textContent = text;
+        const colorClass = type === 'success' ? 'text-green-600' :
+          type === 'error' ? 'text-red-600' : 'text-grey-900';
+        messageArea.className = `my-4 ${colorClass} text-center`;
+        messageArea.style.display = 'block';
+      }
+
+    })()
+  </script>
 
 </body>
 
