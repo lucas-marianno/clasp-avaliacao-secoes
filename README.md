@@ -6,13 +6,9 @@ The web app is used by over 7000 employees across the municipality.
 ## Tech Stack
 Yeah, I know google sheets should not be used as a data base yada yada yada... But, hear me out, PMSBC offers to the Secretaria de Educação the Enterprise plan of Google Workspace. That being said, this standard development environment.
 
-### Front End
 - HTML5
-- JavaScript (vanilla)
+- JavaScript (vanilla - clasp dropped support for typescript)
 - CSS (tailwind)
-
-### Back End
-- TypeScript (will be converted to `.gs` - Google App Script)
 
 ### Database
 - Google Sheets
