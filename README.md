@@ -22,14 +22,16 @@ Yeah, I know google sheets should not be used as a data base yada yada yada... B
 - Install and log into [clasp]("https://developers.google.com/apps-script/guides/clasp")
 
 ### Appscript settings
-- Create a new [Google Sheets](https://docs.google.com/spreadsheets/) document
-- Create a new [App Script](https://script.google.com/) Project
-- Save the GSheets document ID to `PropertiesService` under the key `db_id`;
-- In the new GSheets doc:
-    - Create 3 tabs with the names according to `constants.ts`
-    - Create the headers according to the indexes in `constants.ts`
-    - Enter the questions in the `PERGUNTAS` sheet following the example in `MOCK_PERGUNTAS` in `test/test.ts`
-- Create a new deployment
+- Create a folder and clone this repo into it
+    - `mkdir my_clasp_folder && cd my_clasp_folder && git clone git@github.com:lucas-marianno/clasp-avaliacao-secoes.git`
+- On the same folder, create a new [App Script](https://script.google.com/) Project
+    - `clasp create`
+- Push the files into your App Script project
+    - `clasp push`
+- Find and run the function `generateEnvironment()` on the web ide. This function will create and populate all the necessary folders, files, triggers and properties. If necessary, it can be run more than once, eventhough it's likely unnecessary
+    - Accept all permission requests made by google
+- Create a new deployment as Web App
+    - [optional] create a new deployment as API-Executable in order to run functions on your local IDE. Otherwise, you can continue developing on your local IDE, but you'll have to use the web IDE in order to run functions.
 - Embed the new deployment link to a [Google Sites](https://sites.google.com/) website (so that the users entry point web link remains the same on every new deployment)
     - When embedding the url, if you deployed the script from within a G Suite domain. Please add `/a/<your domain name>` right after `https://script.google.com`
     Example: `https://script.google.com/a/<your.company.domain.here>/macros/s/<yourNewDeploymentIdHere>/exec`
