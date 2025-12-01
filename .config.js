@@ -1,6 +1,8 @@
 const CONFIG = {
   IS_DEV_MODE: false,
   DISABLE_CACHE: false,
+  projectFolderId: PropertiesService.getScriptProperties().getProperty("projectFolderId"),
+  reportDocId: PropertiesService.getScriptProperties().getProperty("reportDocId"),
   spreadSheetId: PropertiesService.getScriptProperties().getProperty("spreadSheetId"),
   spreadSheetTabs: {
     perguntasDB: {
@@ -55,10 +57,3 @@ const CONFIG = {
     }
   },
 }
-
-/**
-* Next, if you deployed the script from within a G Suite domain. Please add /a/<your domain name> right after https://script.google.com.
-* 
-* https://script.google.com/a/emeb.saobernardo.sp.gov.br/macros/s/AKfycbwPtyJmQSZ85pBZ-QZhfzmaanSYo4x4UHO4lJkM067NsDtwjKdvuyOI-Ah7HO0AKtnS/exec
-*/
-
