@@ -5,6 +5,7 @@ function onOpen() {
 
   ui.createMenu("Atualizar")
     .addItem("Limpar cache", 'clearCache')
+    .addItem("Purge raw data", 'purgeRawData')
     .addToUi();
 }
 

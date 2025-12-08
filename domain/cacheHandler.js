@@ -1,6 +1,7 @@
 const CACHE_KEYS = {
   perguntas: "perguntas",
   indexHtml: "index_html",
+  matriculas: "matriculas"
 }
 
 class CacheHandler {
@@ -65,4 +66,25 @@ class CacheHandler {
     Logger.log(`Saved perguntas to cache.`);
   }
 
+  /**
+  * @param {string} matriculasJson
+  */
+  saveMatriculas(matriculasJson) {
+    if (typeof matriculasJson !== "string") throw new TypeError(`matriculasJson must be a JSON string`);
+    this._cacheService.put(CACHE_KEYS.matriculas, matriculasJson, 60 * 60 * 6); // 6h cache
+
+    Logger.log(`Saved matriculas to cache with json.length of ${matriculasJson.length}`);
+  }
+
+  /**
+  * Returns a JSON parsed string
+  * @returns {String} 
+  */
+  loadMatriculas() {
+    const matriculas = this._cacheService.get(CACHE_KEYS.matriculas);
+    if (!matriculas) return;
+
+    Logger.log(`Loaded matriculas from cache with json.length of ${matriculas.length}`);
+    return matriculas;
+  }
 }

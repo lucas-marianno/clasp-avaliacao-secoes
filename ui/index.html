@@ -57,27 +57,42 @@
 
     <!-- Dados Avaliador -->
     <div class="my-8">
-      <table class="w-full my-5">
+      <table class="w-full mt-5">
         <colgroup>
-          <col style="width: 15%">
-          <col style="width: 85%">
+          <col style="width: 20%">
+          <col style="width: 80%">
         </colgroup>
         <tr>
-          <td><label for="avaliador-matr" class="block text-sm font-medium text-gray-700">Matrícula (s/ dig):</label>
+          <td>
+            <label id="avaliador-matr-label" for="avaliador-matr" class="block text-sm font-medium text-gray-700">Matrícula (s/ dig):</label>
+            <label id="avaliador-cpf-label" for="avaliador-cpf" class="block text-sm font-medium text-gray-700" style="display:none" >CPF (somente números):</label>
           </td>
           <td><label for="avaliador-name" class="block text-sm font-medium text-gray-700">Nome:</label></td>
         </tr>
         <tr>
-          <td><input id="avaliador-matr" name="avaliador-matr" type="text" placeholder="Matrícula"
+          <td>
+            <input id="avaliador-matr" name="avaliador-matr" type="text" placeholder="Matrícula"
               class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-              maxlength=5 minlength=5 required></td>
-          <td><input id="avaliador-name" name="avaliador-name" type="text" placeholder="Digite o seu nome completo"
+              maxlength=5 minlength=5 required>
+            <input id="avaliador-cpf" name="avaliador-cpf" type="text" placeholder="CPF"
               class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-              required></td>
+              maxlength=11
+              minlength=11
+              style="display:none"
+              required
+              >
+          </td>
+          <td>
+            <input id="avaliador-name" name="avaliador-name" type="text" placeholder="Digite o seu nome completo"
+              class="avaliador-input w-full p-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+              required>
+          </td>
         </tr>
         <tr>
           <td>
             <span id="avaliador-matr-error" class="text-red-500 text-xs mt-1" style="display: none;">*
+              Obrigatório</span>
+            <span id="avaliador-cpf-error" class="text-red-500 text-xs mt-1" style="display: none;">*
               Obrigatório</span>
           </td>
           <td>
@@ -86,6 +101,9 @@
           </td>
         </tr>
       </table>
+      <input id="sem-matr-checkbox" name="abster-checkbox" type="checkbox" class="ml-2 align-middle">
+      <span class="text-sm align-middle">Sou funcionário de creche conveniada e não possuo número de matrícula.</span>
+      
     </div>
 
     <hr class="m-6" />
@@ -200,11 +218,11 @@
             <td></td>
             <td></td>
             <td class="pt-2 pb-4">
-              <input id="abster-checkbox" name="abster-checkbox" type="checkbox" class="m-2 align-middle"><span
-                class="text-sm align-middle">Não posso responder esta pergunta.</span>
-
+              <input id="abster-checkbox" name="abster-checkbox" type="checkbox" class="m-2 align-middle">
+              <span class="text-sm align-middle">Não posso responder esta pergunta.</span>
             </td>
           </tr>
+
         </tbody>
       </table>
     </div>
@@ -270,11 +288,20 @@
       const STYLE_NEUTRAL_BORDER = ['border-gray-300', 'focus:ring-indigo-500', 'focus:border-indigo-500'];
 
       // -----------------------------------------------------------------------  Elements
+
       // avaliador
       const avaliadorMatr = document.getElementById('avaliador-matr');
       const avaliadorMatrError = document.getElementById('avaliador-matr-error');
+      const avaliadorMatrLabel = document.getElementById('avaliador-matr-label');
+
+      const avaliadorCpf = document.getElementById('avaliador-cpf');
+      const avaliadorCpfError = document.getElementById('avaliador-cpf-error');
+      const avaliadorCpfLabel = document.getElementById('avaliador-cpf-label');
+
       const avaliadorName = document.getElementById('avaliador-name');
       const avaliadorNameError = document.getElementById('avaliador-name-error');
+
+      const semMatrCheckbox = document.getElementById('sem-matr-checkbox');
 
       // buttons
       const testBtn = document.getElementById('test-btn');
@@ -324,6 +351,10 @@
         loadRespostasFromLocalStorage();
         loadUserDataFromLocalStorage();
 
+        if(semMatrCheckbox.checked){
+          toggleCpfMatr();
+        }
+
         toggleVisibility();
       });
 
@@ -348,16 +379,24 @@
       initBtn.addEventListener('click', () => {
         if (!validateFields()) return;
 
-        currentTopicoIndex++;
-        loadTopico();
+        if(semMatrCheckbox.checked){
+          initQuestionario();
+        }else{
+          validateMatrAgainstDb();
+        }
 
-        toggleVisibility();
       })
+
+
 
       submitBtn.addEventListener('click', () => {
         if (!validateFields()) return;
 
-        saveAndSubmit();
+        if(semMatrCheckbox.checked){
+          saveAndSubmit();
+        }else{
+          validateMatrAgainstDb();
+        }
       })
 
       nextBtn.addEventListener('click', () => {
@@ -375,6 +414,10 @@
 
       absterCheckbox.addEventListener('change', () => {
         toggleSSCTextAreasEnabling();
+      })
+
+      semMatrCheckbox.addEventListener('change', () => {
+        toggleCpfMatr();
       })
 
       // ----------------------------------------------------------------------- Togglers
@@ -435,7 +478,39 @@
         }
       }
 
+      function toggleCpfMatr(){ // also toggles lables, and errors.
+        if(semMatrCheckbox.checked){
+          // disable matr
+          avaliadorMatr.style.display = 'none'
+          avaliadorMatrError.style.display = 'none'
+          avaliadorMatrLabel.style.display = 'none'
+
+          // enable cpf
+          avaliadorCpf.style.display = '';
+          avaliadorCpfLabel.style.display = '';
+
+        }else{
+          // disable cpf
+          avaliadorCpf.style.display = 'none';
+          avaliadorCpfError.style.display = 'none';
+          avaliadorCpfLabel.style.display = 'none';
+
+          // enable matr
+          avaliadorMatr.style.display = ''
+          avaliadorMatrLabel.style.display = ''
+
+        }
+      }
+
       // ----------------------------------------------------------------------- Loaders
+      function initQuestionario(){
+        currentTopicoIndex++;
+
+        saveUserDataToLocalStorage();
+        loadTopico();
+        toggleVisibility();
+      }
+
       function loadTopico() {
         // replaces '\n' and '\r' with '<br/>'
         topicDescription.innerHTML = `<span class="font-bold">Critério a avaliar: </span>` + perguntasData[currentTopicoIndex][PERGUNTAS_DB_INDEXES.topicoDescr].replace(/\r\n|\r|\n/g, "<br/>");
@@ -506,6 +581,7 @@
 
         const payload = {
           matr: avaliadorMatr.value,
+          cpf: avaliadorCpf.value,
           name: avaliadorName.value,
           respostasData: JSON.stringify(saveResposta()),
           timestamp: Date.now(),
@@ -516,12 +592,20 @@
       // ----------------------------------------------------------------------- Local Storage
       function saveUserDataToLocalStorage() {
         localStorage.setItem("avaliadorMatr", avaliadorMatr.value);
+        localStorage.setItem("avaliadorCpf", avaliadorCpf.value);
         localStorage.setItem("avaliadorName", avaliadorName.value);
+
+        localStorage.setItem("semMatr", semMatrCheckbox.checked);
+
       }
 
       function loadUserDataFromLocalStorage() {
         avaliadorMatr.value = localStorage.getItem("avaliadorMatr") || "";
+        avaliadorCpf.value = localStorage.getItem("avaliadorCpf") || "";
         avaliadorName.value = localStorage.getItem("avaliadorName") || "";
+
+        semMatrCheckbox.checked = localStorage.getItem("semMatr") === "true" ? true : false ;
+        console.log(semMatrCheckbox.checked);
       }
 
       function loadRespostasFromLocalStorage() {
@@ -541,21 +625,64 @@
       }
 
       // ----------------------------------------------------------------------- Validation
+      function validateMatrAgainstDb(){
+        if(semMatrCheckbox.checked) return;
+        if(!validateFields()) return;
+
+        const matr = avaliadorMatr.value;
+
+        toggleLoaderSpinner();
+        showMessage("Validando a matrícula do funcionário...")
+        google.script.run.withSuccessHandler(handleMatrValidationResponse).validateMatricula(matr);
+      }
+
+      function handleMatrValidationResponse(response){
+        toggleLoaderSpinner();
+
+        if(response.status === "error"){
+          setErrorStyles(avaliadorMatr, avaliadorMatrError, response.msg);
+          showMessage("ERRO: " + response.msg, response.status);
+        }else{
+          showMessage();
+          clearErrorStyles(avaliadorMatr, avaliadorMatrError);
+
+          if(currentTopicoIndex === -1) initQuestionario();
+          if(currentTopicoIndex === perguntasData.length - 1) saveAndSubmit();    
+        }
+
+      }
+
       function validateFields() {
         let isValid = true;
 
-        const matr = avaliadorMatr.value;
-        if (!matr) {
-          setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Campo obrigatório');
-          isValid = false;
-        } else if (/\D+/.test(matr)) {
-          setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Apenas números (sem dígito)');
-          isValid = false;
-        } else if (!/^\d{5}$/.test(matr)) {
-          setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Matrícula inválida');
-          isValid = false;
-        } else {
-          clearErrorStyles(avaliadorMatr, avaliadorMatrError);
+        if(!semMatrCheckbox.checked){
+          const matr = avaliadorMatr.value;
+          if (!matr) {
+            setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Campo obrigatório');
+            isValid = false;
+          } else if (/\D+/.test(matr)) {
+            setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Apenas números (sem dígito)');
+            isValid = false;
+          } else if (!/^\d{5}$/.test(matr)) {
+            setErrorStyles(avaliadorMatr, avaliadorMatrError, 'Matrícula inválida');
+            isValid = false;
+          } else {
+            clearErrorStyles(avaliadorMatr, avaliadorMatrError);
+          }
+        }else{
+          const cpf = avaliadorCpf.value;
+          if (!cpf) {
+            setErrorStyles(avaliadorCpf, avaliadorCpfError, 'Campo obrigatório');
+            isValid = false;
+          } else if (/\D+/.test(cpf)) {
+            setErrorStyles(avaliadorCpf, avaliadorCpfError, 'Apenas números (sem dígito)');
+            isValid = false;
+          } else if (!validateCpf(cpf)) { // check for digit validation Mod 11 algo
+            setErrorStyles(avaliadorCpf, avaliadorCpfError, 'CPF inválido');
+            isValid = false;
+          } else {
+            clearErrorStyles(avaliadorCpf, avaliadorCpfError);
+          }
         }
 
         const name = avaliadorName.value;
@@ -606,6 +733,32 @@
         inputEl.classList.remove(...STYLE_ERROR_BORDER);
         inputEl.classList.add(...STYLE_NEUTRAL_BORDER);
         errorEl.style.display = 'none';
+      }
+
+      function validateCpf(strCPF) {
+        if (!/^\d{11}$/.test(strCPF) || strCPF == "00000000000") return false;
+
+        let sum = 0;
+        let remainder;
+
+        for (i = 1; i <= 9; i++){
+          sum = sum + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+        }
+        remainder = (sum * 10) % 11;
+
+        if (remainder == 10 || remainder == 11) remainder = 0;
+        if (remainder != parseInt(strCPF.substring(9, 10))) return false;
+
+        sum = 0;
+        for (i = 1; i <= 10; i++) {
+          sum = sum + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+        }
+        remainder = (sum * 10) % 11;
+
+        if (remainder == 10 || remainder == 11) remainder = 0;
+        if (remainder != parseInt(strCPF.substring(10, 11))) return false;
+
+        return true;
       }
 
       // ----------------------------------------------------------------------- Handlers

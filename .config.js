@@ -4,6 +4,7 @@ const CONFIG = {
   projectFolderId: PropertiesService.getScriptProperties().getProperty("projectFolderId"),
   reportDocId: PropertiesService.getScriptProperties().getProperty("reportDocId"),
   spreadSheetId: PropertiesService.getScriptProperties().getProperty("spreadSheetId"),
+  titularidadesExercicioId: PropertiesService.getScriptProperties().getProperty("titularidadesExercicioId"),
   spreadSheetTabs: {
     perguntasDB: {
       name: this.IS_DEV_MODE ? "_dev_PERGUNTAS" : "PERGUNTAS",
@@ -31,29 +32,42 @@ const CONFIG = {
       name: this.IS_DEV_MODE ? "_dev_DB_RESPOSTAS" : "_DB_RESPOSTAS",
       indexes: {
         matr: 0,
-        nome: 1,
-        idPergunta: 2,
-        toStart: 3,
-        toStop: 4,
-        toContinue: 5,
-        abster: 6,
-        timestamp: 7
+        cpf: 1,
+        nome: 2,
+        idPergunta: 3,
+        toStart: 4,
+        toStop: 5,
+        toContinue: 6,
+        abster: 7,
+        timestamp: 8
       }
     },
     respostasRawData: {
       name: "_DB_RESPOSTAS_RAW_DATA_",
       indexes: {
         matr: 0,
-        name: 1,
-        rawData: 2,
-        timestamp: 3,
-        status: 4,
+        cpf: 1,
+        name: 2,
+        rawData: 3,
+        timestamp: 4,
+        status: 5,
       },
       statuses: {
         pending: "PENDING",
         processed: "PROCESSED",
         error: "ERROR",
       }
+    },
+    titularidadesExercicio: {
+      name: "DadosCompleto",
+      indexex: {
+        matr: 0,
+        dig: 1,
+        name: 2,
+        cargo: 3,
+        uniExercicio: 9,
+        funcao: 10
+      }
     }
-  },
+  }
 }

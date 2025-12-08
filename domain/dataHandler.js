@@ -31,6 +31,7 @@ class DataHandler {
       const row = new Array(Object.keys(i).length);
 
       row[i.matr] = data?.matr;
+      row[i.cpf] = data?.cpf;
       row[i.name] = data?.name;
       row[i.rawData] = data?.respostasData;
       row[i.timestamp] = data?.timestamp;
@@ -116,12 +117,13 @@ class DataHandler {
       if (!fromRow) fromRow = r + 1;
 
       const userMatr = rawData[r][this._indexes.matr];
+      const userCpf = rawData[r][this._indexes.cpf];
       const userName = rawData[r][this._indexes.name];
       const timestamp = rawData[r][this._indexes.timestamp];
 
       let respostasData = rawData[r][this._indexes.rawData];
       respostasData = JSON.parse(respostasData);
-      respostasData = respostasData.map(e => [userMatr, userName, e.idPergunta, e.toStart, e.toStop, e.toContinue, e.abster, timestamp]);
+      respostasData = respostasData.map(e => [userMatr,userCpf, userName, e.idPergunta, e.toStart, e.toStop, e.toContinue, e.abster, timestamp]);
 
       bulkData.push(...respostasData);
     }
