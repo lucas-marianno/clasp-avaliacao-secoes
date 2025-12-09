@@ -1,3 +1,9 @@
+function testHelper() {
+  const matriculas = (new TitExercHelper()).getMatriculas();
+  const asString = JSON.stringify(matriculas);
+  Logger.log("json len -> " + asString.length);
+  Logger.log(asString);
+}
 
 function testMatrValidator() {
 

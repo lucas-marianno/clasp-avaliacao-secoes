@@ -1,8 +1,10 @@
-const CACHE_KEYS = {
-  perguntas: "perguntas",
-  indexHtml: "index_html",
-  matriculas: "matriculas"
+const CACHE_KEYS = { // this is only here because .gas classes do not accept static parameters... 
+  perguntas: CONFIG.IS_DEV_MODE ? "perguntas_dev" : "perguntas",
+  indexHtml: CONFIG.IS_DEV_MODE ? "index_html_dev" : "index_html",
+  matriculas: CONFIG.IS_DEV_MODE ? "matriculas_dev" : "matriculas",
+  notAcceptingHtml: CONFIG.IS_DEV_MODE ? "notAcceptingHtml_dev" : "notAcceptingHtml",
 }
+
 
 class CacheHandler {
   constructor() {
@@ -11,6 +13,10 @@ class CacheHandler {
     if (CONFIG.DISABLE_CACHE) {
       Logger.log("Caching is disabled in .config");
       this.clearCache();
+    }
+
+    if (CONFIG.IS_DEV_MODE) {
+      Logger.log("Caching is in '_dev' mode");
     }
   }
 
@@ -26,10 +32,11 @@ class CacheHandler {
   }
 
   /**
+   * @param {CACHE_KEYS} cacheKey
    * @returns {HtmlService.HtmlOutput}
    */
-  getIndexHtml() {
-    let htmlRawData = this._cacheService.get(CACHE_KEYS.indexHtml);
+  getHtml(cacheKey) {
+    let htmlRawData = this._cacheService.get(cacheKey);
 
     if (!htmlRawData) return;
 
@@ -38,12 +45,14 @@ class CacheHandler {
   }
 
   /**
-   * @param {HtmlService.HtmlOutput}
+   * @param {HtmlService.HtmlOutput} htmlOutput
+   * @param {CACHE_KEYS} cacheKey
    */
-  saveHtml(htmlOutput) {
-    this._cacheService.put(CACHE_KEYS.indexHtml, htmlOutput.getContent(), 60 * 60); // 1h cache
+  saveHtml(htmlOutput, cacheKey) {
+    this._cacheService.put(cacheKey, htmlOutput.getContent(), 60 * 60); // 1h cache
     Logger.log("Saved htmlOutput into cache");
   }
+
 
   /**
    * @returns {string} JSON 

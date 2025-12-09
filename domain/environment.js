@@ -1,5 +1,5 @@
 function generateEnvironment() {
-  new Environment();
+  (new Environment());
 }
 
 class Environment {
@@ -14,7 +14,7 @@ class Environment {
     this.ss = this._generateDbSs();
 
     // moves THIS script to project folder
-    this._moveToProjectFolder([ScriptApp.getScriptId()]);
+    // this._moveToProjectFolder([ScriptApp.getScriptId()]);
   }
 
   installTriggers() {
@@ -22,6 +22,7 @@ class Environment {
 
     ScriptApp.newTrigger("onOpen").forSpreadsheet(this.ss).onOpen().create();
     ScriptApp.newTrigger("purgeRawData").timeBased().everyHours(1).create();
+    ScriptApp.newTrigger("backUpSpreadSheet").timeBased().everyHours(8).create()
 
     Logger.log(`Triggers installed!`);
   }
@@ -78,6 +79,7 @@ class Environment {
   _moveToProjectFolder(filesIds) {
     for (let id of filesIds) {
       const file = DriveApp.getFileById(id);
+
       file.moveTo(this.projectFolder);
     }
   }

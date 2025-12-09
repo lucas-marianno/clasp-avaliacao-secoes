@@ -20,7 +20,7 @@
 function doGet() {
   const cacheHandler = new CacheHandler();
 
-  let htmlOutput = cacheHandler.getIndexHtml() || _createHtml(cacheHandler);
+  let htmlOutput = cacheHandler.getHtml(CACHE_KEYS.indexHtml) || _generateIndex(cacheHandler);
 
   return htmlOutput.setTitle("Avaliação SE - 2025");
 }
