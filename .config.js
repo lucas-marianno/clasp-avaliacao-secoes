@@ -1,16 +1,13 @@
-function isAcceptingResponses() {
-  const now = new Date();
-  
-  return now > CONFIG.acceptingResponses.fromDate && now <= CONFIG.acceptingResponses.upToDate;
-}
-
 const CONFIG = {
-  IS_DEV_MODE: false || ScriptApp.getService().getUrl().endsWith("/dev"),
+  IS_DEV_MODE: ScriptApp.getService().getUrl().endsWith("/dev"),
   DISABLE_CACHE: false,
-  acceptingResponses: {
-    fromDate: new Date(2025, 12 - 1, 09, 14, 0), // 09/12/2025 14:00
-    upToDate: new Date(2025, 12 - 1, 19, 22, 0), // 19/12/2025 22:00
-  },
+  IS_ACCEPTING_RESPONSES:(() => {
+    const fromDate = new Date(2025, 12 - 1, 09, 14); // 09/12/2025 14:00
+    const upToDate = new Date(2025, 12 - 1, 19, 22); // 19/12/2025 22:00
+    const now = new Date();
+
+    return now > fromDate && now <= upToDate;
+  })(),
   projectFolderId: PropertiesService.getScriptProperties().getProperty("projectFolderId"),
   autoBackUpsFolderId: PropertiesService.getScriptProperties().getProperty("autoBackUpsFolderId"),
   reportDocId: PropertiesService.getScriptProperties().getProperty("reportDocId"),

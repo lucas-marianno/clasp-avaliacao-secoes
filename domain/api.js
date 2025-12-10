@@ -20,15 +20,21 @@
 function doGet() {
   const cacheHandler = new CacheHandler();
 
-  let htmlOutput = cacheHandler.getHtml(CACHE_KEYS.indexHtml) || _generateIndex(cacheHandler);
+  let htmlOutput;
+
+  if (CONFIG.IS_ACCEPTING_RESPONSES) {
+    htmlOutput = cacheHandler.getHtml(CACHE_KEYS.indexHtml) || _generateIndex(cacheHandler);
+  } else {
+    htmlOutput = cacheHandler.getHtml(CACHE_KEYS.notAcceptingHtml) || _generateNotAccepting(cacheHandler);
+  }
 
   return htmlOutput.setTitle("Avaliação SE - 2025");
 }
 
 function saveFormData(rawData) {
-  const handler = new DataHandler();
-
-  return handler.ingestRawData(rawData);
+  return CONFIG.IS_ACCEPTING_RESPONSES ?
+    (new DataHandler()).ingestRawData(rawData) :
+    { status: 'error', message: `Este documento de avaliação não está mais aceitando respostas. O prazo para envio das repostas foi de 09/12/2025 à 19/12/2025 até as 22h.`, };
 }
 
 /**

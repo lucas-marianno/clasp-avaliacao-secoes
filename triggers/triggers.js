@@ -24,6 +24,8 @@ function purgeRawData() {
 }
 
 function backUpSpreadSheet() {
+  if(!CONFIG.IS_ACCEPTING_RESPONSES) return;
+
   const ssFile = DriveApp.getFileById(CONFIG.spreadSheetId);
   const backupFolder = DriveApp.getFolderById(CONFIG.autoBackUpsFolderId);
 

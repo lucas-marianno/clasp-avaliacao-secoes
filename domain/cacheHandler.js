@@ -40,7 +40,7 @@ class CacheHandler {
 
     if (!htmlRawData) return;
 
-    Logger.log("Loaded htmlOutput from cache");
+    Logger.log(`Loaded htmlOutput with key '${cacheKey}' from cache`);
     return HtmlService.createHtmlOutput(htmlRawData);
   }
 
@@ -49,8 +49,8 @@ class CacheHandler {
    * @param {CACHE_KEYS} cacheKey
    */
   saveHtml(htmlOutput, cacheKey) {
-    this._cacheService.put(cacheKey, htmlOutput.getContent(), 60 * 60); // 1h cache
-    Logger.log("Saved htmlOutput into cache");
+    this._cacheService.put(cacheKey, htmlOutput.getContent(), 60 * 60 * 6); // 6h cache
+    Logger.log(`Saved htmlOutput with key '${cacheKey}' into cache`);
   }
 
 
@@ -70,7 +70,7 @@ class CacheHandler {
    */
   savePerguntas(perguntasJsonString) {
     if (typeof perguntasJsonString !== "string") throw new TypeError(`perguntasJsonString must be a JSON string`);
-    this._cacheService.put(CACHE_KEYS.perguntas, perguntasJsonString, 60 * 60);// 1h cache
+    this._cacheService.put(CACHE_KEYS.perguntas, perguntasJsonString, 60 * 60 * 6);// 6h cache
 
     Logger.log(`Saved perguntas to cache.`);
   }
