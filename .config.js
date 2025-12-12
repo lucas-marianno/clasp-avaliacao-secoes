@@ -1,7 +1,7 @@
 const CONFIG = {
   IS_DEV_MODE: ScriptApp.getService().getUrl().endsWith("/dev"),
   DISABLE_CACHE: false,
-  IS_ACCEPTING_RESPONSES:(() => {
+  IS_ACCEPTING_RESPONSES: (() => {
     const fromDate = new Date(2025, 12 - 1, 09, 14); // 09/12/2025 14:00
     const upToDate = new Date(2025, 12 - 1, 19, 22); // 19/12/2025 22:00
     const now = new Date();
@@ -13,6 +13,23 @@ const CONFIG = {
   reportDocId: PropertiesService.getScriptProperties().getProperty("reportDocId"),
   spreadSheetId: PropertiesService.getScriptProperties().getProperty("spreadSheetId"),
   titularidadesExercicioId: PropertiesService.getScriptProperties().getProperty("titularidadesExercicioId"),
+  purgedRespostas: {
+    folderId: PropertiesService.getScriptProperties().getProperty("purgedRespostasFolderId"),
+    folderName: "Respostas Expurgadas",
+    currentSsId: PropertiesService.getScriptProperties().getProperty("purgedRespostasCurrentSsId"),
+    sheetName: this.IS_DEV_MODE ? "_dev_DB_RESPOSTAS" : "_DB_RESPOSTAS",
+    indexes: {
+      matr: 0,
+      cpf: 1,
+      nome: 2,
+      idPergunta: 3,
+      toStart: 4,
+      toStop: 5,
+      toContinue: 6,
+      abster: 7,
+      timestamp: 8
+    }
+  },
   spreadSheetTabs: {
     perguntasDB: {
       name: this.IS_DEV_MODE ? "_dev_PERGUNTAS" : "PERGUNTAS",
@@ -34,20 +51,6 @@ const CONFIG = {
         secao: 3,
         topicoTitle: 4,
         topicoDescr: 5,
-      }
-    },
-    respostasDB: {
-      name: this.IS_DEV_MODE ? "_dev_DB_RESPOSTAS" : "_DB_RESPOSTAS",
-      indexes: {
-        matr: 0,
-        cpf: 1,
-        nome: 2,
-        idPergunta: 3,
-        toStart: 4,
-        toStop: 5,
-        toContinue: 6,
-        abster: 7,
-        timestamp: 8
       }
     },
     respostasRawData: {

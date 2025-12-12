@@ -3,7 +3,6 @@ class DataHandler {
     this._ss = SpreadsheetApp.openById(CONFIG.spreadSheetId);
     this._perguntasSheet = this._ss.getSheetByName(CONFIG.spreadSheetTabs.perguntasDB.name);
     this._rawDataSheet = this._ss.getSheetByName(CONFIG.spreadSheetTabs.respostasRawData.name);
-    this._respostasDB = this._ss.getSheetByName(CONFIG.spreadSheetTabs.respostasDB.name);
     this._indexes = CONFIG.spreadSheetTabs.respostasRawData.indexes;
     this._statuses = CONFIG.spreadSheetTabs.respostasRawData.statuses;
   }
@@ -66,11 +65,12 @@ class DataHandler {
       return;
     }
 
-    this._saveDataToRespostas(processResult.bulkData);
+    this._saveDataToExternalRespostasSs(processResult);
     this._markAsProccessed(processResult.fromRow, processResult.numRows);
 
-    Logger.log(`Raw data purged from '${CONFIG.spreadSheetTabs.respostasRawData.name}' into '${CONFIG.spreadSheetTabs.respostasDB.name}'`);
+    Logger.log(`Raw data purged from '${CONFIG.spreadSheetTabs.respostasRawData.name}' into db with ID'${CONFIG.purgedRespostas.currentSsId}'`);
   }
+
 
   /**
    * @returns {string} JSON
@@ -99,7 +99,7 @@ class DataHandler {
   }
 
   /**
-   * @returns {{bulkData: any[][], updatedRawData: any[][], lastProccessedRawDataRow: Integer, proccessedRowCount: Integer}}
+   * @returns {{bulkData: any[][], fromRow: Integer, numRows: Integer}}
    */
   _processRawData() {
 
@@ -123,7 +123,7 @@ class DataHandler {
 
       let respostasData = rawData[r][this._indexes.rawData];
       respostasData = JSON.parse(respostasData);
-      respostasData = respostasData.map(e => [userMatr,userCpf, userName, e.idPergunta, e.toStart, e.toStop, e.toContinue, e.abster, timestamp]);
+      respostasData = respostasData.map(e => [userMatr, userCpf, userName, e.idPergunta, e.toStart, e.toStop, e.toContinue, e.abster, timestamp]);
 
       bulkData.push(...respostasData);
     }
@@ -136,27 +136,49 @@ class DataHandler {
 
     return {
       bulkData: bulkData,
-      // updatedRawData: rawData,
       fromRow: fromRow,
       numRows: numRows,
     }
   }
 
   /**
-   * @param {any[][]} bulkData
+   * @returns {bulkData: any[][], fromRow: Integer, numRows: Integer}
    */
-  _saveDataToRespostas(bulkData) {
-    const lock = LockService.getScriptLock();
+  _saveDataToExternalRespostasSs(processResult) {
+    Logger.log("Saving data to external Respostas Ss");
 
+    // open / create external SS
+    let externalSS;
+    try {
+      externalSS = SpreadsheetApp.openById(CONFIG.purgedRespostas.currentSsId);
+    } catch (e) {
+      externalSS = Environment.generateExternalRespostasSs(processResult.fromRow);
+    }
+
+    // check for SS capacity
+    // gsheets has a hard limit of 10kk cells. but it becomes really slugish with anything over 100k rows or over 1mil cells.
+    const maxUsableNumberOfRows = 100000;
+    const rowCount = externalDB.getLastRow();
+    if (rowCount >= maxUsableNumberOfRows) {
+      Logger.log(`Current external ss with ID '${CONFIG.purgedRespostas.currentSsId}' has reached 100% capacity. Creating new external ss to receive purged respostas.`);
+      externalSS = Environment.generateExternalRespostasSs(processResult.fromRow);
+    } else {
+      Logger.log(`Current external ss with ID '${CONFIG.purgedRespostas.currentSsId}' is at ${rowCount / maxUsableNumberOfRows * 100}% capacity. [${rowCount} rows]`)
+    }
+
+    const externalDB = externalSS.getSheetByName(CONFIG.purgedRespostas.sheetName);
+    const bulkData = processResult.bulkData;
+
+    const lock = LockService.getScriptLock();
     try {
       lock.waitLock(30000);
 
-      const nextRowNumber = this._respostasDB.getLastRow() + 1;
-      const appendDataRng = this._respostasDB.getRange(nextRowNumber, 1, bulkData.length, bulkData[0].length);
+      const nextRowNumber = externalDB.getLastRow() + 1;
+      const appendDataRng = externalDB.getRange(nextRowNumber, 1, bulkData.length, bulkData[0].length);
 
       appendDataRng.setValues(bulkData);
 
-      Logger.log(`Successfully saved ${bulkData.length} new answers to '${CONFIG.spreadSheetTabs.respostasDB.name}' table.`);
+      Logger.log(`Successfully saved ${bulkData.length} new answers to external db with id '${externalSS.getId()}' with tab name '${CONFIG.purgedRespostas.sheetName}'.`);
 
     } catch (e) {
       Logger.log(`An error occurred while saving data batch from raw to db:\n\n` + e);

@@ -256,6 +256,9 @@
             <button id="submit-btn"
               class="button bg-red-500 px-2 py-4 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 ease-in-out"
               style="display:none">Enviar avaliação</button>
+            <button id="new-answer-btn"
+              class="button bg-gray-600 px-2 py-4 h-3/4 w-1/2 min-w-32 text-white text-sm font-bold rounded-lg shadow-md hover:bg-cyan-500 transition-all duration-300 ease-in-out"
+              style="display:none">Avaliar novamente</button>
           </td>
 
           <td class="text-right">
@@ -308,9 +311,10 @@
       const prevBtn = document.getElementById('prev-btn');
       const initBtn = document.getElementById('init-btn');
       const submitBtn = document.getElementById('submit-btn');
+      const newAnswerBtn = document.getElementById('new-answer-btn');
       const nextBtn = document.getElementById('next-btn');
       const absterCheckbox = document.getElementById('abster-checkbox');
-
+      
       // divs
       const tutorialDiv = document.getElementById('tutorial-div');
       const respostaSalvaDiv = document.getElementById('resposta-salva-div');
@@ -339,8 +343,9 @@
       let currentTopicoIndex = -1;
 
       // ----------------------------------------------------------------------- Event Listeners
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => main());
 
+      function main(){
         const jaRespondido = localStorage.getItem("jaRespondido");
 
         if (jaRespondido) {
@@ -352,11 +357,11 @@
         loadUserDataFromLocalStorage();
 
         if(semMatrCheckbox.checked){
-          toggleCpfMatr();
+          checkCpfMatrToggle();
         }
 
-        toggleVisibility();
-      });
+        checkVisibilityToggle();
+      }
 
       testBtn.addEventListener('click', () => {
       })
@@ -373,7 +378,7 @@
           loadTopico();
         }
 
-        toggleVisibility();
+        checkVisibilityToggle();
       })
 
       initBtn.addEventListener('click', () => {
@@ -387,6 +392,17 @@
 
       })
 
+      newAnswerBtn.addEventListener('click', () => {
+        localStorage.clear();
+
+        currentTopicoIndex = -1;
+        semMatrCheckbox.checked = false;
+
+        checkVisibilityToggle();
+        checkCpfMatrToggle();
+
+        main();
+      })
 
 
       submitBtn.addEventListener('click', () => {
@@ -409,27 +425,30 @@
           currentTopicoIndex++;
           loadTopico();
         }
-        toggleVisibility();
+        checkVisibilityToggle();
       })
 
       absterCheckbox.addEventListener('change', () => {
-        toggleSSCTextAreasEnabling();
+        checkSSCTextAreasToggle();
       })
 
       semMatrCheckbox.addEventListener('change', () => {
-        toggleCpfMatr();
+        checkCpfMatrToggle();
       })
 
       // ----------------------------------------------------------------------- Togglers
-      function toggleVisibility() {
-
+      function checkVisibilityToggle() {
         if (currentTopicoIndex === -1) { // tutorial page
+
           tutorialDiv.style.display = '';
+          respostaSalvaDiv.style.display = 'none';
           topicDiv.style.display = 'none';
 
           prevBtn.style.display = 'none';
           initBtn.style.display = '';
           nextBtn.style.display = 'none';
+          newAnswerBtn.style.display = 'none';
+          submitBtn.style.display = 'none';
 
         } else if (currentTopicoIndex === perguntasData.length - 1) { // last page
 
@@ -456,7 +475,7 @@
         loaderDiv.style.display = loaderDiv.style.display === 'none' ? '' : 'none';
       }
 
-      function toggleSSCTextAreasEnabling() {
+      function checkSSCTextAreasToggle() {
         if (absterCheckbox.checked) {
           // clear text areas
           startTextArea.value = '';
@@ -478,7 +497,7 @@
         }
       }
 
-      function toggleCpfMatr(){ // also toggles lables, and errors.
+      function checkCpfMatrToggle(){ // also toggles lables, and errors.
         if(semMatrCheckbox.checked){
           // disable matr
           avaliadorMatr.style.display = 'none'
@@ -508,7 +527,7 @@
 
         saveUserDataToLocalStorage();
         loadTopico();
-        toggleVisibility();
+        checkVisibilityToggle();
       }
 
       function loadTopico() {
@@ -546,7 +565,7 @@
           throw new Error(`otracoisaerradapacadaralhoaconteceu seliga: \n\n->${currentResposta.length}`)
         }
 
-        toggleSSCTextAreasEnabling();
+        checkSSCTextAreasToggle();
       }
 
       // ----------------------------------------------------------------------- Savers
@@ -782,6 +801,7 @@
 
         prevBtn.style.display = 'none';
         submitBtn.style.display = 'none';
+        newAnswerBtn.style.display = '';
         initBtn.style.display = 'none';
         nextBtn.style.display = 'none';
       }
@@ -789,7 +809,7 @@
       function showMessage(text, type) {
         messageArea.textContent = text;
         const colorClass = type === 'success' ? 'text-green-600' :
-          type === 'error' ? 'text-red-600' : 'text-grey-900';
+          type === 'error' ? 'text-red-600' : 'text-gray-900';
         messageArea.className = `my-4 ${colorClass} text-center`;
         messageArea.style.display = 'block';
       }

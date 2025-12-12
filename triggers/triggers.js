@@ -24,7 +24,10 @@ function purgeRawData() {
 }
 
 function backUpSpreadSheet() {
-  if(!CONFIG.IS_ACCEPTING_RESPONSES) return;
+  if(!CONFIG.IS_ACCEPTING_RESPONSES) {
+    Logger.log("backup aborted, form is no longer accepting responses");
+    return;
+  };
 
   const ssFile = DriveApp.getFileById(CONFIG.spreadSheetId);
   const backupFolder = DriveApp.getFolderById(CONFIG.autoBackUpsFolderId);

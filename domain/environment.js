@@ -121,6 +121,56 @@ class Environment {
   }
 
   /**
+   * @param {Integer} lastProccessedRawDataRow
+   * @returns {SpreadsheetApp.Spreadsheet}
+   */
+  static generateExternalRespostasSs(lastProccessedRawDataRow) {
+    const props = PropertiesService.getScriptProperties();
+
+    // create file
+    const fileName = `Avaliação das Seções - Respostas a partir de #${lastProccessedRawDataRow}`;
+    const ss = SpreadsheetApp.create(fileName);
+
+    // use / create folder
+    let folder;
+    try {
+      folder = DriveApp.getFolderById(CONFIG.purgedRespostas.folderId);
+    } catch (e) {
+      folder = DriveApp.createFolder(CONFIG.purgedRespostas.folderName);
+      props.setProperty("purgedRespostasFolderId", folder.getId());
+
+      Logger.log("Created purgedRespostasFolder with id " + folder.getId());
+    }
+
+    // move file to folder
+    const ssFile = DriveApp.getFileById(ssId);
+    ssFile.moveTo(folder);
+
+    Logger.log(`Generated external respostas ss with id '${ssId}' in folder '${folder.getId()}'`);
+
+    // add fileId to props
+    const ssId = ss.getId();
+    const propKey = "purgedRespostasCurrentSsId"
+    props.setProperty(propKey, ssId);
+
+    Logger.log(`updated prop ${propKey}`);
+
+    // rename tab
+    const tab = ss.getSheets()[0];
+    tab.setName(CONFIG.purgedRespostas.sheetName);
+
+    // create tab headers
+    const tabHeader = Object.keys(CONFIG.purgedRespostas.indexes);
+    tab.appendRow(tabHeader);
+
+    // delete remaining rows
+    tab.deleteColumns(tabHeader.length + 1, tab.getMaxColumns() - tabHeader.length);
+    tab.deleteRows(2, tab.getMaxRows() - 1);
+
+    return ss;
+  }
+
+  /**
    * @returns {void}
    */
   _generateTabs() {
