@@ -155,6 +155,8 @@ class DataHandler {
       externalSS = Environment.generateExternalRespostasSs(processResult.fromRow);
     }
 
+    let externalDB = externalSS.getSheetByName(CONFIG.purgedRespostas.sheetName);
+
     // check for SS capacity
     // gsheets has a hard limit of 10kk cells. but it becomes really slugish with anything over 100k rows or over 1mil cells.
     const maxUsableNumberOfRows = 100000;
@@ -162,11 +164,11 @@ class DataHandler {
     if (rowCount >= maxUsableNumberOfRows) {
       Logger.log(`Current external ss with ID '${CONFIG.purgedRespostas.currentSsId}' has reached 100% capacity. Creating new external ss to receive purged respostas.`);
       externalSS = Environment.generateExternalRespostasSs(processResult.fromRow);
+      externalDB = externalSS.getSheetByName(CONFIG.purgedRespostas.sheetName);
     } else {
       Logger.log(`Current external ss with ID '${CONFIG.purgedRespostas.currentSsId}' is at ${rowCount / maxUsableNumberOfRows * 100}% capacity. [${rowCount} rows]`)
     }
 
-    const externalDB = externalSS.getSheetByName(CONFIG.purgedRespostas.sheetName);
     const bulkData = processResult.bulkData;
 
     const lock = LockService.getScriptLock();
