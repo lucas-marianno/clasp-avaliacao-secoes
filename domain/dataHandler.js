@@ -162,7 +162,7 @@ class DataHandler {
     const maxUsableNumberOfRows = 100000;
     const rowCount = externalDB.getLastRow();
     if (rowCount >= maxUsableNumberOfRows) {
-      Logger.log(`Current external ss with ID '${CONFIG.purgedRespostas.currentSsId}' has reached 100% capacity. Creating new external ss to receive purged respostas.`);
+      Logger.log(`Current external ss with ID '${CONFIG.purgedRespostas.currentSsId}' has reached over 100% capacity [${rowCount / maxUsableNumberOfRows * 100}%]. Creating new external ss to receive purged respostas.`);
       externalSS = Environment.generateExternalRespostasSs(processResult.fromRow);
       externalDB = externalSS.getSheetByName(CONFIG.purgedRespostas.sheetName);
     } else {

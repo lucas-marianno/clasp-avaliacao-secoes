@@ -130,6 +130,12 @@ class Environment {
     // create file
     const fileName = `Avaliação das Seções - Respostas a partir de #${lastProccessedRawDataRow}`;
     const ss = SpreadsheetApp.create(fileName);
+    const ssId = ss.getId();
+    
+    // add fileId to props
+    const propKey = "purgedRespostasCurrentSsId"
+    props.setProperty(propKey, ssId);
+    Logger.log(`updated prop ${propKey}`);
 
     // use / create folder
     let folder;
@@ -146,14 +152,6 @@ class Environment {
     const ssFile = DriveApp.getFileById(ssId);
     ssFile.moveTo(folder);
 
-    Logger.log(`Generated external respostas ss with id '${ssId}' in folder '${folder.getId()}'`);
-
-    // add fileId to props
-    const ssId = ss.getId();
-    const propKey = "purgedRespostasCurrentSsId"
-    props.setProperty(propKey, ssId);
-
-    Logger.log(`updated prop ${propKey}`);
 
     // rename tab
     const tab = ss.getSheets()[0];
@@ -167,6 +165,7 @@ class Environment {
     tab.deleteColumns(tabHeader.length + 1, tab.getMaxColumns() - tabHeader.length);
     tab.deleteRows(2, tab.getMaxRows() - 1);
 
+    Logger.log(`Generated external respostas ss with id '${ssId}' in folder '${folder.getId()}'`);
     return ss;
   }
 
